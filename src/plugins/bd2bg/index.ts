@@ -50,80 +50,84 @@ export async function apply(ctx: Context, options: Config = {}) {
             "打包Bestdori社区ID为41131的谱面，同时添加背景视频：\r" +
             "kirapack 41131 -v https://example.com/example.mp4")
         .action(async (argv, id, args) => {
-            if (id === null || id === undefined)
-                return withQuote(argv.session?.messageId, "使用示例：kirapack 128")
-            if (typeof id !== "number" || id <= 0)
-                return withQuote(argv.session?.messageId, "您提供的ID无效，请确认后再试。")
-            const timer = setTimeout(() => {
-                argv.session?.send(withQuote(
-                    argv.session?.messageId,
-                    `正在为您查询 ID 为 ${id} 的谱面，请稍候……`
-                )).catch(console.error)
-            }, 3000)
-            const chart = await mixLookupCharts(id)
-            clearTimeout(timer)
-            if (!chart)
-                return withQuote(argv.session?.messageId, `ID 为 ${id} 的谱面不存在，请检查后再试。`)
-            if (chart.official) {
-                return "是官谱啊喵？咕咕咕咕咕咕"
-                if (!fs.existsSync(__data_dir + `/kirapack/official_${id}.kirapack`)) {
+            try {
+                if (id === null || id === undefined)
+                    return withQuote(argv.session?.messageId, "使用示例：kirapack 128")
+                if (typeof id !== "number" || id <= 0)
+                    return withQuote(argv.session?.messageId, "您提供的ID无效，请确认后再试。")
+                const timer = setTimeout(() => {
                     argv.session?.send(withQuote(
                         argv.session?.messageId,
-                        `正在为您打包生成 ${getByLocale(chart.official.title, BandoriServer.cn)}，请稍候……`
+                        `正在为您查询 ID 为 ${id} 的谱面，请稍候……`
                     )).catch(console.error)
-                }
-                argv.session?.send(withQuote(
-                    argv.session?.messageId,
-                    `↓↓↓复制下方链接到浏览器以下载 [${id}]${getByLocale(chart.official.title, BandoriServer.cn)}`
-                )).catch(console.error)
-            }
-            if (chart.community) {
-                if (!fs.existsSync(__data_dir + `/kirapack/community_${id}.kirapack`)) {
-                    argv.session?.send(withQuote(
-                        argv.session?.messageId,
-                        `正在为您打包生成 ${chart.community.title}，请稍候……`
-                    )).catch(console.error)
-
-                    {
-                        const details = await BestdoriAPI.post.details(id)
-                        const chartNotes = details.post.chart
-                        const convertedChart = bd2bg(chartNotes)
-                        const BPMs: NoteBPM[] = chartNotes.filter(n => n.type === "BPM") as NoteBPM[]
-                        BPMs.sort((a, b) => a.bpm - b.bpm)
-                        const chart: Record<string, BanGroundChart> = {}
-                        chart[BanGroundDifficulty[details.post.diff]] = {
-                            version: 2,
-                            difficulty: BanGroundDifficultyC[details.post.diff],
-                            level: details.post.level,
-                            offset: 0,
-                            ...convertedChart
-                        }
-                        const optPath = await kirapack({
-                            id,
-                            title: details.post.title,
-                            artist: details.post.artists,
-                            author: details.post.author.username,
-                            authorNick: details.post.author.nickname || details.post.author.username,
-                            preview: [0, 0],
-                            BPM: [BPMs[0].bpm, BPMs[BPMs.length - 1].bpm],
-                            length: 0,
-                            audio: await getAudioUrl(details.post.song),
-                            cover: await getCoverUrl(details.post.song),
-                            chart,
-                            tag: []
-                        })
-                        fs.renameSync(optPath, path.join(__data_dir, `./kirapack/community_${id}.kirapack`))
+                }, 3000)
+                const chart = await mixLookupCharts(id)
+                clearTimeout(timer)
+                if (!chart)
+                    return withQuote(argv.session?.messageId, `ID 为 ${id} 的谱面不存在，请检查后再试。`)
+                if (chart.official) {
+                    return "是官谱啊喵？咕咕咕咕咕咕"
+                    if (!fs.existsSync(__data_dir + `/kirapack/official_${id}.kirapack`)) {
+                        argv.session?.send(withQuote(
+                            argv.session?.messageId,
+                            `正在为您打包生成 ${getByLocale(chart.official.title, BandoriServer.cn)}，请稍候……`
+                        )).catch(console.error)
                     }
+                    argv.session?.send(withQuote(
+                        argv.session?.messageId,
+                        `↓↓↓复制下方链接到浏览器以下载 [${id}]${getByLocale(chart.official.title, BandoriServer.cn)}`
+                    )).catch(console.error)
                 }
-                await argv.session?.send(withQuote(
-                    argv.session?.messageId,
-                    `↓↓↓复制下方链接到浏览器以下载 [${id}]${chart.community.title}`
-                )).catch(console.error)
-                await argv.session?.send(withQuote(
-                    argv.session?.messageId,
-                    `${kiraconf.kirapack.baseURL}${kiraconf.kirapack.baseURL.endsWith("/") ? "" : "/"}community_${id}.kirapack`
-                )).catch(console.error)
+                if (chart.community) {
+                    if (!fs.existsSync(__data_dir + `/kirapack/community_${id}.kirapack`)) {
+                        argv.session?.send(withQuote(
+                            argv.session?.messageId,
+                            `正在为您打包生成 ${chart.community.title}，请稍候……`
+                        )).catch(console.error)
+
+                        {
+                            const details = await BestdoriAPI.post.details(id)
+                            const chartNotes = details.post.chart
+                            const convertedChart = bd2bg(chartNotes)
+                            const BPMs: NoteBPM[] = chartNotes.filter(n => n.type === "BPM") as NoteBPM[]
+                            BPMs.sort((a, b) => a.bpm - b.bpm)
+                            const chart: Record<string, BanGroundChart> = {}
+                            chart[BanGroundDifficulty[details.post.diff]] = {
+                                version: 2,
+                                difficulty: BanGroundDifficultyC[details.post.diff],
+                                level: details.post.level,
+                                offset: 0,
+                                ...convertedChart
+                            }
+                            const optPath = await kirapack({
+                                id,
+                                title: details.post.title,
+                                artist: details.post.artists,
+                                author: details.post.author.username,
+                                authorNick: details.post.author.nickname || details.post.author.username,
+                                preview: [0, 0],
+                                BPM: [BPMs[0].bpm, BPMs[BPMs.length - 1].bpm],
+                                length: 0,
+                                audio: await getAudioUrl(details.post.song),
+                                cover: await getCoverUrl(details.post.song),
+                                chart,
+                                tag: []
+                            })
+                            fs.renameSync(optPath, path.join(__data_dir, `./kirapack/community_${id}.kirapack`))
+                        }
+                    }
+                    await argv.session?.send(withQuote(
+                        argv.session?.messageId,
+                        `↓↓↓复制下方链接到浏览器以下载 [${id}]${chart.community.title}`
+                    )).catch(console.error)
+                    await argv.session?.send(withQuote(
+                        argv.session?.messageId,
+                        `${kiraconf.kirapack.baseURL}${kiraconf.kirapack.baseURL.endsWith("/") ? "" : "/"}community_${id}.kirapack`
+                    )).catch(console.error)
+                }
+                return ""
+            } catch (e) {
+                return "发生错误：" + e.toString()
             }
-            return ""
         })
 }
