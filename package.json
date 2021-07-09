@@ -1,0 +1,28 @@
+{
+  "name": "banground-cat",
+  "version": "1.0.0",
+  "description": "BanGround neko bot",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "npm i -g nodemon",
+    "dev": "tsc && concurrently \"tsc --watch\" \"nodemon --watch build/**/*.js --watch data/config.json --exec node ./build/index.js\"",
+    "start": "tsc && node ./build/index.js"
+  },
+  "author": "ReiKohaku",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@types/fluent-ffmpeg": "^2.1.18",
+    "axios": "^0.21.1",
+    "compressing": "^1.5.1",
+    "fluent-ffmpeg": "^2.1.2",
+    "koishi": "^3.11.2",
+    "koishi-adapter-discord": "^1.1.3",
+    "koishi-adapter-kaiheila": "^1.1.4",
+    "koishi-adapter-onebot": "^3.0.9",
+    "koishi-adapter-telegram": "^1.0.3",
+    "koishi-plugin-common": "^4.2.6"
+  },
+  "devDependencies": {
+    "concurrently": "^6.1.0"
+  }
+}
