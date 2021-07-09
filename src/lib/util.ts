@@ -6,6 +6,17 @@ export function withQuote(messageId: string, content: any): string {
     return segment("quote", {id: messageId}) + "\r" + content
 }
 
+const {Argv} = require("koishi-core")
+type Argv = typeof Argv
+export function withQuoteBySession(argv: Argv, content: string | number | boolean) {
+    if (argv.session.platform === "onebot" && argv.session.subtype === "group")
+        return segment("quote", { id: argv.session.messageId }) +
+            segment("at", { id: argv.session.userId }) +
+            " " +
+            content
+    return withQuote(argv.session.messageId, content)
+}
+
 export function decimalsToFractional(decimals: number, accuracy: number = 0.0625): [number, number, number] {
     const lowerLimitOfError = 9999999999, continuedFraction = 16;
     if (Number.isInteger(decimals)) return [decimals, 0, 1];

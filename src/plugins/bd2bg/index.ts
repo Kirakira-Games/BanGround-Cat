@@ -1,6 +1,6 @@
 import {Context} from "koishi-core"
 import {BandoriServer, getAudioUrl, getByLocale, getCoverUrl, mixLookupCharts} from "../../lib/api/BestdoriUtil"
-import {withQuote} from "../../lib/util"
+import {withQuoteBySession} from "../../lib/util"
 import fs from "fs"
 import {__data_dir} from "../../index";
 import BestdoriAPI, {NoteBPM} from "../../lib/api/Bestdori";
@@ -52,36 +52,36 @@ export async function apply(ctx: Context, options: Config = {}) {
         .action(async (argv, id, args) => {
             try {
                 if (id === null || id === undefined)
-                    return withQuote(argv.session?.messageId, "使用示例：kirapack 128")
+                    return withQuoteBySession(argv, "使用示例：kirapack 128")
                 if (typeof id !== "number" || id <= 0)
-                    return withQuote(argv.session?.messageId, "您提供的ID无效，请确认后再试。")
+                    return withQuoteBySession(argv, "您提供的ID无效，请确认后再试。")
                 const timer = setTimeout(() => {
-                    argv.session?.send(withQuote(
-                        argv.session?.messageId,
+                    argv.session?.send(withQuoteBySession(
+                        argv,
                         `正在为您查询 ID 为 ${id} 的谱面，请稍候……`
                     )).catch(console.error)
                 }, 3000)
                 const chart = await mixLookupCharts(id)
                 clearTimeout(timer)
                 if (!chart)
-                    return withQuote(argv.session?.messageId, `ID 为 ${id} 的谱面不存在，请检查后再试。`)
+                    return withQuoteBySession(argv, `ID 为 ${id} 的谱面不存在，请检查后再试。`)
                 if (chart.official) {
                     return "是官谱啊喵？咕咕咕咕咕咕"
                     if (!fs.existsSync(__data_dir + `/kirapack/official_${id}.kirapack`)) {
-                        argv.session?.send(withQuote(
-                            argv.session?.messageId,
+                        argv.session?.send(withQuoteBySession(
+                            argv,
                             `正在为您打包生成 ${getByLocale(chart.official.title, BandoriServer.cn)}，请稍候……`
                         )).catch(console.error)
                     }
-                    argv.session?.send(withQuote(
-                        argv.session?.messageId,
+                    argv.session?.send(withQuoteBySession(
+                        argv,
                         `↓↓↓复制下方链接到浏览器以下载 [${id}]${getByLocale(chart.official.title, BandoriServer.cn)}`
                     )).catch(console.error)
                 }
                 if (chart.community) {
                     if (!fs.existsSync(__data_dir + `/kirapack/community_${id}.kirapack`)) {
-                        argv.session?.send(withQuote(
-                            argv.session?.messageId,
+                        argv.session?.send(withQuoteBySession(
+                            argv,
                             `正在为您打包生成 ${chart.community.title}，请稍候……`
                         )).catch(console.error)
 
@@ -116,12 +116,12 @@ export async function apply(ctx: Context, options: Config = {}) {
                             fs.renameSync(optPath, path.join(__data_dir, `./kirapack/community_${id}.kirapack`))
                         }
                     }
-                    await argv.session?.send(withQuote(
-                        argv.session?.messageId,
+                    await argv.session?.send(withQuoteBySession(
+                        argv,
                         `↓↓↓复制下方链接到浏览器以下载 [${id}]${chart.community.title}`
                     )).catch(console.error)
-                    await argv.session?.send(withQuote(
-                        argv.session?.messageId,
+                    await argv.session?.send(withQuoteBySession(
+                        argv,
                         `${kiraconf.kirapack.baseURL}${kiraconf.kirapack.baseURL.endsWith("/") ? "" : "/"}community_${id}.kirapack`
                     )).catch(console.error)
                 }
