@@ -19,9 +19,7 @@ export default class CacheManager {
         return fs.existsSync(this.getPath(dir, file))
     }
 
-    public static get(dir: string, file: string, options?: { encoding?: null, flag?: string } | null): Buffer | null
-    public static get(dir: string, file: string, options: { encoding: BufferEncoding; flag?: string; } | BufferEncoding): string | null
-    public static get(dir: string, file: string, options?: BaseEncodingOptions & { flag?: string; } | BufferEncoding | null): Buffer | string | null {
+    public static get(dir: string, file: string, options?: any): Buffer | string | null {
         if (!this.has(dir, file)) return null
         return fs.readFileSync(this.getPath(dir, file), options)
     }
