@@ -1,7 +1,7 @@
 import {mkdirSync, unlinkDirSync} from "./util";
 import {__cache_dir} from "../index";
 import path from "path";
-import fs, {BaseEncodingOptions} from "fs";
+import fs from "fs";
 
 export default class CacheManager {
     public static getPath(dir: string, file?: string) {
