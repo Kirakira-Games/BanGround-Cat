@@ -44,7 +44,7 @@ export interface MixLookupChartsResult {
 export async function mixLookupCharts(id: number): Promise<MixLookupChartsResult | null> {
     const promiseOfficial = new Promise<BestdoriApiSongsSong | null>((resolve, reject) => {
         BestdoriAPI.songs.song(id).then(resolve).catch(e => {
-            if (e.isAxiosError && e.response.status === 404) resolve(null)
+            if (e.isAxiosError && e.response && e.response.status === 404) resolve(null)
             else reject(e)
         })
     })
