@@ -218,7 +218,7 @@ function download(url) {
     return __awaiter(this, void 0, void 0, function* () {
         const response = yield axios({
             method: "GET",
-            url,
+            url: util_1.filter(url),
             responseType: "arraybuffer"
         });
         if (response.data)

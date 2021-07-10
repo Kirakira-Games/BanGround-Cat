@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Bestdori = exports.BandoriChartDiff = void 0;
 const axios_1 = __importDefault(require("axios"));
+const util_1 = require("../util");
 var BandoriChartDiff;
 (function (BandoriChartDiff) {
     BandoriChartDiff[BandoriChartDiff["easy"] = 0] = "easy";
@@ -201,5 +202,5 @@ class Bestdori {
     }
 }
 exports.Bestdori = Bestdori;
-const BestdoriAPI = new Bestdori("https://bestdori.com");
+const BestdoriAPI = new Bestdori(util_1.filter("https://bestdori.com"));
 exports.default = BestdoriAPI;

@@ -23,6 +23,8 @@ exports.__root_dir = path_1.default.join(__dirname, "/..");
 fs_1.default.mkdir(exports.__data_dir, () => { });
 fs_1.default.mkdir(exports.__cache_dir, () => { });
 fs_1.default.mkdir(exports.__public_dir, () => { });
+const util_1 = require("./lib/util");
+console.log(util_1.filter("https://bestdori.com"));
 /* Load bot data */
 const botData = (function () {
     try {

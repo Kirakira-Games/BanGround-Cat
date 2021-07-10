@@ -206,6 +206,6 @@ export function getKiraConf(): KiraConf {
 export function filter(str: string): string {
     const filters = getKiraConf().download.filter
     let result = str
-    for (const f in filters) str = str.replace(f, filters[f])
+    for (const f in filters) result = result.replace(f, filters[f])
     return result
 }

@@ -20,7 +20,7 @@ function mixLookupCharts(id) {
     return __awaiter(this, void 0, void 0, function* () {
         const promiseOfficial = new Promise((resolve, reject) => {
             Bestdori_1.default.songs.song(id).then(resolve).catch(e => {
-                if (e.isAxiosError && e.response.status === 404)
+                if (e.isAxiosError && e.response && e.response.status === 404)
                     resolve(null);
                 else
                     reject(e);

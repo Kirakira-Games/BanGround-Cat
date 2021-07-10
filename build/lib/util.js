@@ -3,14 +3,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.firstNotNullIndex = exports.unlinkDirSync = exports.mkdirSync = exports.Fractional = exports.decimalsToFractional = exports.withQuote = void 0;
+exports.filter = exports.getKiraConf = exports.firstNotNullIndex = exports.unlinkDirSync = exports.mkdirSync = exports.Fractional = exports.decimalsToFractional = exports.withQuoteBySession = exports.withQuote = void 0;
 const koishi_utils_1 = require("koishi-utils");
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
+const index_1 = require("../index");
 function withQuote(messageId, content) {
     return koishi_utils_1.segment("quote", { id: messageId }) + "\r" + content;
 }
 exports.withQuote = withQuote;
+const { Argv } = require("koishi-core");
+function withQuoteBySession(argv, content) {
+    if (argv.session.platform === "onebot" && argv.session.subtype === "group")
+        return koishi_utils_1.segment("quote", { id: argv.session.messageId }) +
+            koishi_utils_1.segment("at", { id: argv.session.userId }) +
+            " " +
+            content;
+    return withQuote(argv.session.messageId, content);
+}
+exports.withQuoteBySession = withQuoteBySession;
 function decimalsToFractional(decimals, accuracy = 0.0625) {
     const lowerLimitOfError = 9999999999, continuedFraction = 16;
     if (Number.isInteger(decimals))
@@ -184,3 +195,16 @@ function firstNotNullIndex(obj) {
     return null;
 }
 exports.firstNotNullIndex = firstNotNullIndex;
+function getKiraConf() {
+    const kiraconf = JSON.parse(fs_1.default.readFileSync(path_1.default.join(index_1.__data_dir, "./kiraconf.json"), "utf-8"));
+    return kiraconf;
+}
+exports.getKiraConf = getKiraConf;
+function filter(str) {
+    const filters = getKiraConf().download.filter;
+    let result = str;
+    for (const f in filters)
+        result = result.replace(f, filters[f]);
+    return result;
+}
+exports.filter = filter;
