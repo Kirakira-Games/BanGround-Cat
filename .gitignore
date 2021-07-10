@@ -3,6 +3,7 @@ yarn.lock
 node_modules
 /data
 /cache
+/lib
 
 .idea
 .vscode
