@@ -1,6 +1,6 @@
 import {Context} from "koishi-core"
 import {BandoriServer, getAudioUrl, getByLocale, getCoverUrl, mixLookupCharts} from "../../lib/api/BestdoriUtil"
-import {withQuoteBySession} from "../../lib/util"
+import {getKiraConf, KiraConf, withQuoteBySession} from "../../lib/util"
 import fs from "fs"
 import {__data_dir} from "../../index";
 import BestdoriAPI, {NoteBPM} from "../../lib/api/Bestdori";
@@ -20,13 +20,7 @@ export async function apply(ctx: Context, options: Config = {}) {
         ...options
     }
 
-    interface KiraConf {
-        kirapack: {
-            baseURL: string
-        }
-    }
-    const kiraconf: KiraConf =
-        JSON.parse(fs.readFileSync(path.join(__data_dir, "./kiraconf.json"), "utf-8")) as KiraConf
+    const kiraconf: KiraConf = getKiraConf()
 
     const command = ctx.command("bd2bg", "Bestdori 转 BanGround 插件")
 

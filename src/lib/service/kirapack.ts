@@ -4,7 +4,7 @@ import Axios, {AxiosResponse} from "axios";
 import fs from "fs";
 import path from "path";
 import {__cache_dir, __data_dir, __lib_dir, __public_dir, __root_dir} from "../../index";
-import {mkdirSync} from "../util";
+import {filter, mkdirSync} from "../util";
 import CacheManager from "../CacheManager";
 import {Bpm, Group} from "../entity/BanGround";
 
@@ -253,7 +253,7 @@ async function convertVideo(input, output): Promise<void> {
 async function download(url: string): Promise<Buffer | void> {
     const response: AxiosResponse<ArrayBuffer> = await axios({
         method: "GET",
-        url,
+        url: filter(url),
         responseType: "arraybuffer"
     })
     if (response.data) return Buffer.from(response.data)

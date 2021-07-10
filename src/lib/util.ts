@@ -1,6 +1,7 @@
 import {segment} from "koishi-utils"
 import path from "path";
 import fs from "fs";
+import {__data_dir} from "../index";
 
 export function withQuote(messageId: string, content: any): string {
     return segment("quote", {id: messageId}) + "\r" + content
@@ -185,4 +186,26 @@ export function unlinkDirSync(dir: string) {
 export function firstNotNullIndex(obj: Record<any, any> | any[]): string | null {
     for (const i in obj) if (obj[i]) return i
     return null
+}
+
+export interface KiraConf {
+    kirapack: {
+        baseURL: string
+    },
+    download: {
+        filter: Record<string, string>
+    }
+}
+
+export function getKiraConf(): KiraConf {
+    const kiraconf: KiraConf =
+        JSON.parse(fs.readFileSync(path.join(__data_dir, "./kiraconf.json"), "utf-8")) as KiraConf
+    return kiraconf
+}
+
+export function filter(str: string): string {
+    const filters = getKiraConf().download.filter
+    let result = str
+    for (const f in filters) str = str.replace(f, filters[f])
+    return result
 }

@@ -1,4 +1,5 @@
 import Axios, {AxiosInstance} from "axios"
+import {filter} from "../util";
 
 export interface BestdoriApiUser {
     nickname: string | null
@@ -466,5 +467,5 @@ export class Bestdori {
     }
 }
 
-const BestdoriAPI = new Bestdori("https://bestdori.com")
+const BestdoriAPI = new Bestdori(filter("https://bestdori.com"))
 export default BestdoriAPI
