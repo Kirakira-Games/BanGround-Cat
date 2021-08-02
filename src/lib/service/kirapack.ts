@@ -15,7 +15,7 @@ export interface MusicHeader {
     title: string
     artist: string
     preview: [number, number]
-    BPM: [number, number]
+    bpm: [number, number]
     length: number
 }
 
@@ -143,7 +143,7 @@ export default async function (data: {
             title: data.title,
             artist: data.artist,
             preview: data.preview,
-            BPM: data.BPM,
+            bpm: data.BPM,
             length: data.length
         }
 
